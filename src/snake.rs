@@ -20,6 +20,15 @@ impl Snake {
         }
     }
 
+    pub fn set_direction(&mut self, dir: Direction) {
+        // 반대 방향 이동은 금지
+        if self.dir.is_opposite(dir) {
+            return;
+        }
+
+        self.dir = dir;
+    }
+
     pub fn update(&mut self) {
         let (head_x, head_y) = self.body[0];
         let next = match self.dir {

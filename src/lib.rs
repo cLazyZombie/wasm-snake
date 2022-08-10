@@ -1,4 +1,5 @@
 mod game;
+mod input;
 mod renderer;
 mod snake;
 

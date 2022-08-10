@@ -25,8 +25,6 @@ pub fn register_loop() -> Result<()> {
     let game = Game::new();
 
     let callback = Closure::<dyn FnMut(f64)>::new(move |v| {
-        game_loop(v);
-
         game.draw();
 
         web_sys::window()
@@ -42,8 +40,4 @@ pub fn register_loop() -> Result<()> {
         .map_err(|_| anyhow!("could not request animation frame"))?;
 
     Ok(())
-}
-
-pub fn game_loop(v: f64) {
-    log::debug!("game_loop: {}", v);
 }

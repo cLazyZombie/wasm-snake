@@ -1,4 +1,6 @@
 mod game;
+mod renderer;
+mod snake;
 
 use std::{cell::RefCell, rc::Rc};
 
@@ -18,13 +20,16 @@ pub async fn start() -> Result<(), JsValue> {
     Ok(())
 }
 
+type CallbackClosure = Rc<RefCell<Option<Closure<dyn FnMut(f64)>>>>;
+
 pub fn register_loop() -> Result<()> {
-    let g: Rc<RefCell<Option<Closure<dyn FnMut(f64)>>>> = Rc::new(RefCell::new(None));
+    let g: CallbackClosure = Rc::new(RefCell::new(None));
     let g_cloned = g.clone();
 
-    let game = Game::new();
+    let mut game = Game::new();
 
     let callback = Closure::<dyn FnMut(f64)>::new(move |v| {
+        game.update(v);
         game.draw();
 
         web_sys::window()

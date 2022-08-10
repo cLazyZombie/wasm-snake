@@ -1,6 +1,9 @@
+mod game;
+
 use std::{cell::RefCell, rc::Rc};
 
 use anyhow::{anyhow, Result};
+use game::Game;
 use wasm_bindgen::prelude::*;
 use wasm_bindgen::JsCast;
 
@@ -10,7 +13,7 @@ pub async fn start() -> Result<(), JsValue> {
     console_log::init_with_level(log::Level::Debug).expect("could not initialize logger");
     log::debug!("start");
 
-    register_loop();
+    register_loop().unwrap();
 
     Ok(())
 }
@@ -19,13 +22,17 @@ pub fn register_loop() -> Result<()> {
     let g: Rc<RefCell<Option<Closure<dyn FnMut(f64)>>>> = Rc::new(RefCell::new(None));
     let g_cloned = g.clone();
 
+    let game = Game::new();
+
     let callback = Closure::<dyn FnMut(f64)>::new(move |v| {
         game_loop(v);
+
+        game.draw();
 
         web_sys::window()
             .unwrap()
             .request_animation_frame(g_cloned.borrow().as_ref().unwrap().as_ref().unchecked_ref())
-            .map_err(|_| anyhow!("could not request animation frame"));
+            .expect("could not request animation frame");
     });
     *g.borrow_mut() = Some(callback);
 

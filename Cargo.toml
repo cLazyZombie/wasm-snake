@@ -15,6 +15,7 @@ futures = "0.3.17"
 wasm-bindgen-futures = "0.4.28"
 console_log = { version = "0.2.0", features = ["wasm-bindgen"] }
 log = "0.4.17"
+anyhow = { version = "1.0.60", features = ["backtrace"] }
 
 [dependencies.web-sys]
 version = "0.3.55"
